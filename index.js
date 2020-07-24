@@ -33,3 +33,12 @@ const systemRouter = require('./router/system')
 app.use('/system', systemRouter)
 
 //4 创建后置中间件
+/**
+ * 如果不自定义  express 自带一个 发送 空字符串到客户端
+ * 
+ * 自定义错误中间件
+ */
+app.use((err,req,res,next)=>{
+	res.status(500)
+	res.send("sql错误")
+})

@@ -13,19 +13,42 @@ module.exports = router
  * 请求方法：
  * 	GET
  * 请求URL：
- * 	/school/list
+ * 	/course/list
  * 请求参数：
  * 	无
- * 返回消息：
- * 	[
- *		{sid: 2, adress: 'xxx', phone: 'yyy', postcode:'...'},
- * 		...
- *	]
+ *
  */
-router.get('/list', (req, res)=>{
-	let output = [
-		{sid:2,address:'北京市东城区'},
-		{sid:5,address:'北京市西城区'},
-	]
-	res.send(output)
+router.get('/list', (req,res,next)=>{
+
+	let sid = req.query.sid
+	if(!sid){
+		let output = {
+			code: 400,
+			msg: 'sid required'
+		}
+		res.send(output)
+		return
+	}
+	
+	let output = {
+		school: {},
+		courseList: []
+	}
+
+	let sql = 'SELECT sid,sname,address FROM school WHERE sid=?'
+	pool.query(sql,sid,(err,result)=>{
+		if(err){
+			next(err)
+			return
+		}
+		if(result.length == 0){
+			res.send(output)
+			return
+		}
+		output.school = result[0]
+		let sql = ''
+		res.send(output)
+	})
+
+	
 })
