@@ -124,8 +124,8 @@ INSERT INTO course VALUES
 /*6.校区开课表*/
 CREATE TABLE schoolCourse(
    scId INT PRIMARY KEY AUTO_INCREMENT,
-   schoolId INT,		/*校区编号*/
-   courseId INT			/*课程编号*/
+   courseId INT,		/*课程编号*/
+   schoolId INT		/*校区编号*/
    /*如果每个校区开同一门课程时间不同，此处还需要记录开课时间*/
 );
 INSERT INTO schoolCourse VALUES
