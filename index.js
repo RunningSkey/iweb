@@ -15,6 +15,21 @@ app.listen(port,()=>{
 
 //3 声明路由和路由器
 const schoolRouter = require('./router/school')
-app.use('/school',schoolRouter)
+app.use('/school', schoolRouter)
+
+const teacherRouter = require('./router/teacher')
+app.use('/teacher', teacherRouter)
+
+const courseRouter = require('./router/course')
+app.use('/course', courseRouter)
+
+const userRouter = require('./router/user')
+app.use('/user', userRouter)
+
+const cartRouter = require('./router/cart')
+app.use('/cart', cartRouter)
+
+const systemRouter = require('./router/system')
+app.use('/system', systemRouter)
 
 //4 创建后置中间件
