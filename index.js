@@ -14,6 +14,7 @@ app.listen(port,()=>{
 
 
 //3 声明路由和路由器
-
+const schoolRouter = require('./router/school')
+app.use('/school',schoolRouter)
 
 //4 创建后置中间件
