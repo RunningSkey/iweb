@@ -1,0 +1,74 @@
+git操作：
+《----本地基本操作命令----》
+1.安装git 
+2.配置git用户名和邮箱：用于保存记录谁修改过{
+git config --global user.name "你的用户名,推荐英文"
+git config --global user.email  "你的邮箱地址"
+验证配置是否正确, 可以查看配置列表
+git config --list
+}
+3.在本地初始化git项目{
+git init:   多出.git文件
+}
+4.暂存所有文件{
+git add .   --也可vscode
+}
+5.提交版本信息{
+git commit -m "本次版本的描述信息"
+}
+6.查看历史版本{
+安装Git History插件    git log
+}
+
+7.需要有下面远程仓库{git push:他将自动上传到云上}
+
+8.git相关命令{
+	检查仓库是否有更新
+	git fetch
+​
+	下载更新到本地
+	git pull
+
+
+代码自动重启 node方向    npm i -g nodemon
+
+删除github上的某个文件：{
+	git pull origin master                    # 将远程仓库里面的项目拉下来
+	dir                                                # 查看有哪些文件夹
+	git rm -r --cached target              # 删除target文件夹
+	git commit -m '删除了target'        # 提交,添加操作说明
+}
+
+忽略git上传node_modules:{
+	创建文件{   .gitignore ---  文件内写需要忽略的文件夹名/文件名  node_modules }
+}
+}
+
+《----云上远程仓库----》
+两种情况：
+1.本地有git项目，上传到新浪云、码云、github{
+	1.配置远程仓库地址：
+	git remote add origin 仓库地址(https/ssh)  只需要第一次配置就可以了
+	{遇到报错：先在全局命令行执行 重置git管理密码
+	git config --system --unset credential.helper}
+	2.如果之前配置过仓库地址，再次配置新的会告知已存在：{
+		需要删除原来的：git remote rm origin
+		再执行第一步
+	}
+	3.git push (-u origin master)  //可以不写 默认左下角分支    //将本地项目更新到github项目上去
+}
+2.本地没有git项目，需要从新浪云、码云、github克隆{
+	git clone 云上地址
+}
+
+关于云上秘钥生成   {
+	ssh-keygen -t rsa -C  "xxx@xxx.com"
+	如果已存在，选择yes
+	找到秘钥代码复制，粘贴到新浪云、码云、github上
+}
+
+
+
+
+
+
