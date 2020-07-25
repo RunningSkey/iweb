@@ -1,54 +1,67 @@
-/**
- * 校区模块，包含如下功能点：
- *	1.1校区列表功能点
- *	1.2校区开课功能点
- */
+
 const express = require('express')
 const pool = require('../pool')
 let router = express.Router()    //创建路由器
 module.exports = router
 
-/**
- * 1.1校区列表功能点
- * 请求方法：
- * 	GET
- * 请求URL：
- * 	/course/list
- * 请求参数：
- * 	无
- *
- */
-router.get('/list', (req,res,next)=>{
 
-	let sid = req.query.sid
-	if(!sid){
-		let output = {
-			code: 400,
-			msg: 'sid required'
-		}
-		res.send(output)
-		return
+router.get('/list', (req,res,next)=>{
+	
+	let typeId = req.query.typeId
+	if(!typeId){
+		typeId = 0
+	}else{
+		typeId = parseInt(typeId)
+	}
+
+	let pageNum = req.query.pageNum
+	if(!pageNum){
+		pageNum = 1
+	}else{
+		pageNum = parseInt(pageNum)
 	}
 	
 	let output = {
-		school: {},
+		totalCount: 0,
+		pageSize: 6,
+		pageCount: 0,
+		pageNum: pageNum,
 		courseList: []
 	}
 
-	let sql = 'SELECT sid,sname,address FROM school WHERE sid=?'
-	pool.query(sql,sid,(err,result)=>{
+	let condition = ''
+	let placeholder = []
+	let sql = 'SELECT COUNT(*) AS c FROM course WHERE 1 '
+	
+	if(typeId>0){
+		sql += 'AND typeId=? '
+		placeholder.push(typeId)
+	}
+	pool.query(sql,placeholder,(err,result)=>{
 		if(err){
 			next(err)
 			return
 		}
-		if(result.length == 0){
-			res.send(output)
-			return
-		}
-		output.school = result[0]
-		let sql = ''
-		res.send(output)
-	})
+		output.totalCount = result[0].c
+		output.pageCount = Math.ceil(output.totalCount/output.pageSize)
 
-	
+		let sql = 'SELECT cid,pic,title,cLength,startTime,price,tid,tname FROM course,teacher WHERE course.teacherId=teacher.tid '
+		let placeholder = []
+		if(typeId>0){
+			sql += 'AND typeId=? '
+			placeholder.push(typeId)
+		}
+		sql += ' ORDER BY cid DESC LIMIT ?, ? '
+		placeholder.push((output.pageNum-1)*output.pageSize)
+		placeholder.push(output.pageSize)
+
+		pool.query(sql,placeholder,(err,result)=>{
+			if(err){
+				next(err)
+				return
+			}
+			output.courseList = result
+			res.send(output)
+		})
+	})
 })

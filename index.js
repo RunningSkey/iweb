@@ -10,8 +10,17 @@ app.listen(port,()=>{
 	console.log(port)
 })
 
-//2 创建前置中间件
+//2 创建前置中间件 解析post请求体
+const bodyParser = require('body-parser')
+app.use(bodyParser.json())
 
+//使用session处理中间件：①为当前客户端分配session存储空间，并告知客户端sid ②当前客户端再次请求时从请求头部读取sid，进而找到该客户端对应的session空间，保存为req.session对象
+let session = require('express-session')
+app.use(session({
+	secret: 'tedu123',	//自定义生成sid随机数的种子
+	saveUninitialized: true,	//是否保存未经初始化过的session数据
+	resave: true,	//是否自动保存session数据——即使没有修改过
+}))
 
 //3 声明路由和路由器
 const schoolRouter = require('./router/school')
@@ -40,5 +49,9 @@ app.use('/system', systemRouter)
  */
 app.use((err,req,res,next)=>{
 	res.status(500)
-	res.send("sql错误")
+	res.send({
+		code: 500,
+		msg: 'Sorry！Server tmp error！Please retry later！',
+		err: err
+	})
 })

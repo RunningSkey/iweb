@@ -55,7 +55,6 @@ router.get('/course', (req,res,next)=>{
 				return
 			}
 			output.courseList = result
-			console.log(output)
 			res.send(output)
 		})
 	})
