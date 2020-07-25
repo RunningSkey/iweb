@@ -5,7 +5,6 @@
  */
 const express = require('express')
 const pool = require('../pool')
-const { route } = require('./teacher')
 let router = express.Router()    //创建路由器
 module.exports = router
 
@@ -165,7 +164,7 @@ router.post('/login',(req,res,next)=>{
 			msg: 'login succ',
 			userInfo: result[0]
 		}
-		console.log(req.session)
+		// console.log(req.session)
 		//3.发送响应消息
 		res.send(output)
 	})

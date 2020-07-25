@@ -6,9 +6,7 @@ const express = require('express');
 
 let port = 5050;/* 端口 */
 let app = express();
-app.listen(port,()=>{
-	console.log(port)
-})
+app.listen(port)
 
 //2 创建前置中间件 解析post请求体
 const bodyParser = require('body-parser')
@@ -35,11 +33,26 @@ app.use('/course', courseRouter)
 const userRouter = require('./router/user')
 app.use('/user', userRouter)
 
+//检查是否登录 才能继续执行
+const loginCheckMiddleware = require('./middleware/loginCheck')
+app.use('/favorite',loginCheckMiddleware)
+const favoriteRouter = require('./router/favorite')
+app.use('/favorite', favoriteRouter)
+
+
+//检查是否登录 才能继续执行
+app.use('/cart',loginCheckMiddleware)
 const cartRouter = require('./router/cart')
 app.use('/cart', cartRouter)
 
+
 const systemRouter = require('./router/system')
 app.use('/system', systemRouter)
+
+// 验证码路由
+const captcha = require('./router/captcha')
+app.use('/captcha',captcha)
+
 
 //4 创建后置中间件
 /**
