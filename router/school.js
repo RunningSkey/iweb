@@ -10,6 +10,7 @@ let router = express.Router()  /* 创建路由器 */
 
 
 router.get('/list',(req,res,next)=>{
+	console.log(req.session)
 	let sql = 'SELECT sid,sname,address,phone,postcode FROM school'
 	pool.query(sql,(err,result)=>{
 		if(err){

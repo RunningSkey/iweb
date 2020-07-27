@@ -213,7 +213,8 @@ CREATE TABLE user(
     sex	VARCHAR(1) NOT NULL DEFAULT '',		  /*性别，M-男，F-女, DEFAULT 'M'*/
     age	VARCHAR(3) NOT NULL DEFAULT '',		  /*年龄*/
     edu	VARCHAR(16) NOT NULL DEFAULT '',	      /*学历*/
-    job	VARCHAR(16) NOT NULL DEFAULT ''	      /*职业*/
+    job	VARCHAR(16) NOT NULL DEFAULT '',	      /*职业*/
+    avatar VARCHAR(128) NOT NULL DEFAULT 'images/user.png' /*头像*/
 );
 INSERT INTO `user` (`uid`, `uname`, `phone`, `upwd`, `nickname`, `sex`, `age`, `edu`, `job`) VALUES
 (1, 'liangliang@tedu.cn', '13501234567', '123456', '亮亮', '男', '25', '本科', '教师'),

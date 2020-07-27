@@ -29,7 +29,7 @@ module.exports = router
  *		
  *	
  */
-router.post('/register', (req,res,next)=>{			
+router.post('/register', (req,res,next)=>{	
 	let uname = req.body.uname
 	let upwd = req.body.upwd
 	let phone = req.body.phone
@@ -102,6 +102,28 @@ router.post('/register', (req,res,next)=>{
 				return
 			}
 
+			let captcha = req.body.captcha
+			if(!captcha){
+				let output = {
+					code: 406,
+					msg: 'captcha required'
+				}
+				res.send(output)
+				return
+			}
+
+			captcha = captcha.toLowerCase() 
+			console.log(req.session)
+			if(captcha !== req.session.captchaRegister){
+				let output = {
+					code: 407,
+					msg: 'captcha err'
+				}
+				res.send(output)
+				return
+			}
+			delete req.session.captchaRegister
+
 			let sql = 'INSERT INTO user(uname,upwd,phone) VALUES(?,?,?)'
 			pool.query(sql,[uname,upwd,phone],(err,result)=>{
 				if(err){
@@ -168,4 +190,15 @@ router.post('/login',(req,res,next)=>{
 		//3.发送响应消息
 		res.send(output)
 	})
+})
+
+
+const multer = require('multer')
+const loginCheck = require('../middleware/loginCheck')
+let upload = multer({dest: './temp'})
+
+router.post('/upload/avatar',upload.single('avatar'))
+router.post('/upload/avatar',(req,res,next)=>{
+	console.log(req.body,req.file)
+	res.send({})
 })

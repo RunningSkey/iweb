@@ -1,17 +1,27 @@
 const express = require('express')
 let router = express.Router()    //创建路由器
 module.exports = router
+
+const random = require('../util/random')
+
 const svgCaptcha = require('svg-captcha')
 router.get('/register',(req,res)=>{
-  let captha = svgCaptcha.create({
+
+  let options = {
     width: 100,
-    height: 30,
+    heigt: 30,
+    fontSize: 40,
+    charPreset: '1234567890',  //预设字符
     size: 5,
     ignoreChars: '0oO1lI2Zz',
-    noise: 4
-  })
+    noise: 5,
+    color: true,
+    background: random.randColor(180,240)
+  }
 
-  req.session.capthaRegister = captha.text
+  let captha = svgCaptcha.create(options)
+
+  req.session.capthaRegister = captha.text.toLowerCase()
 
   res.type('svg')
   res.send(captha.data)
