@@ -33,7 +33,7 @@ router.post('/register', (req,res,next)=>{
 	let uname = req.body.uname
 	let upwd = req.body.upwd
 	let phone = req.body.phone
-	let captha = req.body.captha
+	let captcha = req.body.captcha
 	if(!uname){
 		let output = {
 			code: 400,
@@ -102,6 +102,7 @@ router.post('/register', (req,res,next)=>{
 				return
 			}
 
+			// 验证码验证
 			let captcha = req.body.captcha
 			if(!captcha){
 				let output = {
@@ -112,9 +113,9 @@ router.post('/register', (req,res,next)=>{
 				return
 			}
 
-			captcha = captcha.toLowerCase() 
-			console.log(req.session)
-			if(captcha !== req.session.captchaRegister){
+			// captcha = captcha.toLowerCase() 
+			console.log(req.session.captchaRegister,captcha)
+			if(captcha != req.session.captchaRegister){
 				let output = {
 					code: 407,
 					msg: 'captcha err'
@@ -192,13 +193,46 @@ router.post('/login',(req,res,next)=>{
 	})
 })
 
-
-const multer = require('multer')
+// 引入工具模块
+const random = require('../util/random')
+// 引入fs模块
+const fs = require('fs')
 const loginCheck = require('../middleware/loginCheck')
+router.post('/upload/avatar',loginCheck)  //修改头像之前必须登录
+// 文件上传 下载模块
+const multer = require('multer')
 let upload = multer({dest: './temp'})
-
 router.post('/upload/avatar',upload.single('avatar'))
 router.post('/upload/avatar',(req,res,next)=>{
-	console.log(req.body,req.file)
-	res.send({})
+	// 获取当前登录的用户id
+	let uid = req.session.userInfo.uid
+	// 读取客户端上传的文件内容
+	console.log(req.body,req.file,uid)
+	// 保存客户端上传文件的描述对象
+	let file = req.file
+	let oldPath = file.path
+	let newPath = 'img-avatar/' + random.randFileName(file.originalname)
+	fs.rename(oldPath,'./public/'+newPath,(err)=>{
+		if(err){
+			next(err)
+			return
+		}
+
+		// 重置数据库中的登录头像地址
+		let sql = 'UPDATE user SET avatar=? WHERE uid=?'
+		pool.query(sql,[newPath,uid],(err,result)=>{
+			if(err){
+				next(err)
+				return
+			}
+		
+			let output = {
+				code: 200,
+				msg: 'avatar upload and changed',
+				fileName: newPath
+			}
+			res.send(output)
+		})
+
+	})
 })

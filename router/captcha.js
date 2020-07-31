@@ -19,10 +19,10 @@ router.get('/register',(req,res)=>{
     background: random.randColor(180,240)
   }
 
-  let captha = svgCaptcha.create(options)
+  let captcha = svgCaptcha.create(options)
 
-  req.session.capthaRegister = captha.text.toLowerCase()
+  req.session.captchaRegister = captcha.text
 
   res.type('svg')
-  res.send(captha.data)
+  res.send(captcha.data)
 })

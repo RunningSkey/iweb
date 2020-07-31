@@ -12,6 +12,9 @@ app.listen(port)
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
 
+//托管静态资源
+app.use(express.static('./public'))
+
 //使用session处理中间件：①为当前客户端分配session存储空间，并告知客户端sid ②当前客户端再次请求时从请求头部读取sid，进而找到该客户端对应的session空间，保存为req.session对象
 let session = require('express-session')
 app.use(session({
@@ -27,6 +30,9 @@ app.use('/school', schoolRouter)
 const teacherRouter = require('./router/teacher')
 app.use('/teacher', teacherRouter)
 
+const typeRouter = require('./router/type')
+app.use('/type', typeRouter)
+
 const courseRouter = require('./router/course')
 app.use('/course', courseRouter)
 
@@ -34,25 +40,26 @@ const userRouter = require('./router/user')
 app.use('/user', userRouter)
 
 //检查是否登录 才能继续执行
-const loginCheckMiddleware = require('./middleware/loginCheck')
-app.use('/favorite',loginCheckMiddleware)
+const loginCheck = require('./middleware/loginCheck')
+app.use('/favorite',loginCheck)
 const favoriteRouter = require('./router/favorite')
 app.use('/favorite', favoriteRouter)
 
 
 //检查是否登录 才能继续执行
-app.use('/cart',loginCheckMiddleware)
+app.use('/cart',loginCheck)
 const cartRouter = require('./router/cart')
 app.use('/cart', cartRouter)
 
 
-const systemRouter = require('./router/system')
-app.use('/system', systemRouter)
 
 // 验证码路由
 const captcha = require('./router/captcha')
 app.use('/captcha',captcha)
 
+
+const systemRouter = require('./router/system')
+app.use('/', systemRouter)
 
 //4 创建后置中间件
 /**
