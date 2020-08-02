@@ -12,6 +12,11 @@ app.listen(port)
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
 
+// 解决跨域
+const cors = require('cors')
+app.use(cors({}))
+
+
 //托管静态资源
 app.use(express.static('./public'))
 
